@@ -1,11 +1,22 @@
+from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
-import os
+from pathlib import Path
 
 load_dotenv()
 
-DATABASE_URL = os.getenv(str("DATABASE_URL"))
-JWT_SECRET = os.getenv("JWT_SECRET")
-ALGORITHM = os.getenv("Algorithm")
-EXPIRE_MINUTES = os.getenv("EXPIRE_MINUTES")
+
+
+class Settings(BaseSettings):
+    DATABASE_URL: str
+    JWT_SECRET: str
+    ALGORITHM: str
+    EXPIRE_MINUTES: int
+
+    class Config:
+        env_file = Path(__file__).resolve().parent.parent / ".env"
+        env_file_encoding = "utf-8"
+
+
+settings = Settings() # type: ignore
 
 

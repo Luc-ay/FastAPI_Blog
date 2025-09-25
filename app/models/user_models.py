@@ -1,7 +1,8 @@
 from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, Text, DateTime, Enum as SQLEnum
+from sqlalchemy.orm import relationship
 from enum import Enum as PyEnum
-from app.core.database import Base
+from ..core.database import Base
 
 class UserRole(PyEnum):
     ADMIN = "admin"
@@ -20,3 +21,6 @@ class User(Base):
 
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+
+    # Relationship to Task
+    tasks = relationship("Task", back_populates="user", cascade="all, delete")

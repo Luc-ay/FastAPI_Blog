@@ -1,9 +1,16 @@
 from fastapi import FastAPI, Request
-from .routers import user_router
+from .routers import user_router, task_router
 from fastapi.responses import JSONResponse
-import traceback
+from app.core.database import Base, engine
+import app.models
+
+def create_db_and_tables():
+    Base.metadata.create_all(bind=engine)
+
+
 
 app = FastAPI()
+
 
 @app.exception_handler(Exception)
 async def generic_exception_handler(request: Request, exc: Exception):
@@ -17,10 +24,6 @@ async def generic_exception_handler(request: Request, exc: Exception):
     )
 
 
-
-
-app = FastAPI()
-
-
 app.include_router(user_router.router)
+app.include_router(task_router.router)
 

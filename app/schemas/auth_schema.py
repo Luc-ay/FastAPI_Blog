@@ -22,6 +22,7 @@ class UserLogin(BaseModel):
     password: str
 
 class LoginResponse(BaseModel):
+    message: str = "User logged in successfully"
     access_token: str
     token_type: str = "bearer"
 

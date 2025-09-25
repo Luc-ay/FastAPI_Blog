@@ -55,4 +55,12 @@ def login_user(db: Session, user: UserLogin):
         "token_type": "bearer"
     }
     
+def get_user_by_id(db: Session, user_id: int):
+    get_user = db.query(user_models.User).filter(user_models.User.id == user_id).first()
 
+    if not get_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    
+    return get_user
+
+    

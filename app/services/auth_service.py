@@ -4,8 +4,11 @@ from ..core.security import hash_password, verify_password
 from ..models import user_models
 from ..schemas.auth_schema import UserCreate, UserLogin
 
+
+''' Service functions for user authentication and registration.'''
+
 def register_user(db: Session, user: UserCreate):
-    # Check if user already exists
+    
     db_user = db.query(user_models.User).filter(user_models.User.email == user.email).first()
     if db_user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
@@ -14,10 +17,10 @@ def register_user(db: Session, user: UserCreate):
     if db_username:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already registered")
     
-    # Hash password
+    
     hashed_password = hash_password(user.password)
     
-    # Create User model instance
+    
     new_user = user_models.User(email=user.email, username=user.username, password=hashed_password, full_name=user.full_name)
     
     # Save to DB

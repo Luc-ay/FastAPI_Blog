@@ -11,7 +11,7 @@ class ProgressStatus(str, Enum):
 class TaskBase(BaseModel):
     title: str = Field(min_length=3, max_length=100, default="Complete API Documentation")
     description: str = Field(default="Detailed documentation for the new API endpoints")
-    progress_status: Optional[ProgressStatus] = Field(default=ProgressStatus.NOT_STARTED)
+    progress:ProgressStatus 
 
 class TaskCreate(TaskBase):
     pass
@@ -19,7 +19,7 @@ class TaskCreate(TaskBase):
 class TaskUpdate(BaseModel):
     title: Optional[str] = Field(min_length=3, max_length=100)
     description: Optional[str]
-    progress_status: Optional[ProgressStatus]
+    progress: Optional[ProgressStatus]
 
 class TaskResponse(BaseModel):
     id: int
@@ -41,7 +41,7 @@ class TaskListResponse(BaseModel):
 class TaskEdit(BaseModel):
     title: Optional[str] = None
     description:Optional [str] = None 
-    progress_status: Optional[ProgressStatus] = None
+    progress: Optional[ProgressStatus] = None
 
 class TaskEditResponse(BaseModel):
     id: int

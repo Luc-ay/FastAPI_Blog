@@ -5,12 +5,15 @@ from app.schemas.task_schema import TaskCreate, TaskEdit
 from typing import Optional
 
 
+'''Service functions for task operations'''
+
+'''Create a new task'''
 def create_task(db: Session, task: TaskCreate, user_id: int):
     get_user = db.query(user_models.User).filter(user_models.User.id == user_id).first()
     if not get_user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
     
-    create = task_models.Task(title=task.title, description=task.description, progress=task.progress_status, user_id=user_id)
+    create = task_models.Task(title=task.title, description=task.description, progress=task.progress, user_id=user_id)
 
     db.add(create)
     db.commit()
@@ -18,7 +21,7 @@ def create_task(db: Session, task: TaskCreate, user_id: int):
 
     return create
 
-
+'''Get all tasks for a user'''
 def get_tasks(db: Session, user_id: int):
 
     get_user = db.query(user_models.User).filter(user_models.User.id == user_id).first()
@@ -32,9 +35,7 @@ def get_tasks(db: Session, user_id: int):
         
     return tasks
 
-
-
-
+'''Filter tasks based on criteria'''
 def task_filter(db: Session, name: Optional[str] = None, task_id: Optional[int] = None, progress: Optional[str] = None):
     query = db.query(task_models.Task)
 
@@ -47,7 +48,7 @@ def task_filter(db: Session, name: Optional[str] = None, task_id: Optional[int] 
 
     return query.all()
 
-
+'''Get a task by its ID for a specific user'''
 def get_task_by_id(db: Session, task_id: int, user_id: int):
     get_user = db.query(user_models.User).filter(user_models.User.id == user_id).first()
 
@@ -61,6 +62,7 @@ def get_task_by_id(db: Session, task_id: int, user_id: int):
     
     return task
 
+'''Edit a task by its ID for a specific user'''
 def edit_task(db: Session, task_id: int, user_id: int, task_update: TaskEdit) -> task_models.Task:
     user = db.query(user_models.User).filter(user_models.User.id == user_id).first()
 
@@ -87,3 +89,26 @@ def edit_task(db: Session, task_id: int, user_id: int, task_update: TaskEdit) ->
     db.refresh(task)
 
     return task
+
+'''Delete a task by its ID for a specific user'''
+def delete_task(db: Session, task_id: int, user_id: int):
+    user = db.query(user_models.User).filter(user_models.User.id == user_id).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized"
+        )
+
+    task = db.query(task_models.Task).filter(
+        task_models.Task.id == task_id, task_models.Task.user_id == user_id
+    ).first()
+
+    if not task:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Task not found"
+        )
+
+    db.delete(task)
+    db.commit()
+
+    return {"detail": "Task deleted successfully"}

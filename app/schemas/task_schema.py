@@ -29,3 +29,25 @@ class TaskResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class TaskListResponse(BaseModel):
+    id: int
+    title: str
+
+    class Config:
+        from_attributes = True
+
+
+class TaskEdit(BaseModel):
+    title: Optional[str] = None
+    description:Optional [str] = None 
+    progress_status: Optional[ProgressStatus] = None
+
+class TaskEditResponse(BaseModel):
+    id: int
+    title: str
+    description: str
+    progress: str
+
+    class Config:
+        from_attributes = True

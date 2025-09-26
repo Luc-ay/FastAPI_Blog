@@ -26,6 +26,18 @@ class LoginResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
 
+class GetUserResponse(BaseModel):
+    id: int
+    email: str
+    username: str
+    full_name: Optional[str] = None
+    role: Optional[str] = None
+    task_count: int
+    task_titles: list[str] = []
+
+    class Config:
+        from_attributes = True
+
 
 class TokenData(BaseModel):
     user_id: Optional[int] = None

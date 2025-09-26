@@ -63,11 +63,6 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> Dict:
         if user_id is None or role is None:
             raise credentials_exception
 
-        # Optional: Check expiration manually (though jose handles it)
-        if exp:
-            if datetime.now(timezone.utc).timestamp() > exp:
-                raise credentials_exception
-
         return {
             "user_id": user_id,
             "role": role

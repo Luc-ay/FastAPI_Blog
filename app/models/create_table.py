@@ -1,5 +1,4 @@
-from app.models.task_models import Task
-from app.models.user_models import User  # if you have user model
+from app.models import User, Task
 from app.core.database import Base, engine
 
 print("Tables to create:", Base.metadata.tables.keys())

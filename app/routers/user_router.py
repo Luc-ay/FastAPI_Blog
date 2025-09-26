@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.core.database import get_db
-from ..services.auth_service import register_user, login_user
-from ..schemas.auth_schema import UserCreate, UserCreateResponse, UserLogin, LoginResponse
+from ..services.auth_service import get_user_by_id, register_user, login_user
+from ..schemas.auth_schema import UserCreate, UserCreateResponse, UserLogin, LoginResponse, GetUserResponse
+from app.core.security import get_current_user
 
 router = APIRouter(
       prefix="/auth",
@@ -23,3 +24,6 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 def login(user: UserLogin, db: Session = Depends(get_db)):
     return login_user(db, user)
 
+@router.get("/{user_id}", status_code=status.HTTP_200_OK, response_model=GetUserResponse)
+def get_user(user_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    return get_user_by_id(db, user_id)

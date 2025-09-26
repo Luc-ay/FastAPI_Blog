@@ -1,7 +1,8 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from ..core.security import create_access_token, hash_password, verify_password
-from ..models import user_models
+from app.schemas.auth_schema import GetUserResponse
+from ..models import user_models, task_models
 from ..schemas.auth_schema import UserCreate, UserLogin
 
 
@@ -60,7 +61,19 @@ def get_user_by_id(db: Session, user_id: int):
 
     if not get_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    tasks = db.query(task_models.Task).filter(task_models.Task.user_id == user_id).all()
     
-    return get_user
+    task_titles = [task.title for task in tasks]
+
+    
+    return {
+        "id": get_user.id,
+        "username": get_user.username,
+        "role": get_user.role,
+        "email": get_user.email,
+        "full_name": get_user.full_name,
+        "task_count": len(tasks),
+        "task_titles": task_titles
+    }
 
     

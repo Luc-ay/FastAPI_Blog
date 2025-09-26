@@ -16,7 +16,7 @@ class Task(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     description = Column(String)
-    progress = Column(SQLEnum(ProgressStatus, name="user_roles"), default=ProgressStatus.NOT_STARTED, nullable=False)
+    progress = Column(SQLEnum(ProgressStatus, name="task_progress"), default=ProgressStatus.NOT_STARTED, nullable=False)
 
     user_id = Column(Integer, ForeignKey("users.id")) 
     user = relationship("User", back_populates="tasks")
